@@ -1,16 +1,22 @@
 import { Button } from '@material-ui/core'
 import React, { useState } from 'react'
 import { useLocation, Link } from 'react-router-dom'
+import { useStateValue } from '../StateProvider'
 import './Header.css'
 import TodoModal from './TodoModal'
 
 
-const Header = ({addTodo, open, handleOpen, handleClose, isEdit, todo, updateTodo}) => {
+const Header = () => {
+
+    const [{}, dispatch] = useStateValue();
 
     const urlPath = useLocation()
-    const [title, setTitle] = useState('')
-    const [day, setDay] = useState('')
-    const [remainder, setRemainder] = useState(false)
+
+    const openModal = () => {
+        dispatch({
+          type: 'MODAL_OPEN'
+        })
+    };
 
     return (
         <div className="navbar">
@@ -21,11 +27,11 @@ const Header = ({addTodo, open, handleOpen, handleClose, isEdit, todo, updateTod
             {urlPath.pathname === "/"
             ?
             <>
-                <Button variant="contained" color="primary" onClick={handleOpen}>
+                <Button variant="contained" color="primary" onClick={openModal}>
                     Add Todo
                 </Button>
 
-                <TodoModal addTodo={addTodo} handleOpen={handleOpen} open={open} handleClose={handleClose} isEdit={isEdit} todo={todo} updateTodo={updateTodo} />
+                <TodoModal />
             </>
             : ''
             }

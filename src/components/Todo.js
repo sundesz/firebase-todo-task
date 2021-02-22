@@ -2,13 +2,25 @@ import React from 'react'
 import { Checkbox, ListItem, ListItemText, ListItemSecondaryAction, IconButton } from '@material-ui/core'
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
+import { useStateValue } from '../StateProvider';
 
-const Todo = ({todo, onDelete, handleOpen, setIsEdit, setTodo}) => {
+const Todo = ({todo}) => {
+
+    const [{}, dispatch] = useStateValue()
 
     const todoEdit = e => {
-        setIsEdit(true)
-        handleOpen()
-        setTodo(todo)
+        dispatch({
+            type: 'MODAL_OPEN'
+        })
+
+        dispatch({
+            type: 'LOAD_TODO_FOR_EDIT',
+            todo: todo
+        })
+
+        dispatch({
+            type: 'SET_TO_EDIT'
+        })
     }
 
     return (
@@ -24,7 +36,7 @@ const Todo = ({todo, onDelete, handleOpen, setIsEdit, setTodo}) => {
                 <IconButton edge="end" aria-label="delete" onClick={todoEdit}>
                     <EditIcon />
                 </IconButton>
-                <IconButton edge="end" aria-label="delete" onClick={e => onDelete(todo.id)}>
+                <IconButton edge="end" aria-label="delete" onClick={e => dispatch({type: 'DELETE_TODO', id: todo.id})}>
                     <DeleteIcon />
                 </IconButton>
             </ListItemSecondaryAction>

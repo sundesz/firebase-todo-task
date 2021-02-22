@@ -1,7 +1,8 @@
 import { Button, Checkbox, FormControl,FormControlLabel,  Input, InputLabel, Modal } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles';
 import React, { useState } from 'react'
-import PropTypes from 'prop-types'
+// import PropTypes from 'prop-types'
+import { useStateValue } from '../StateProvider';
 
 function getModalStyle() {
     const top = 40;
@@ -38,14 +39,27 @@ const useStyles = makeStyles((theme) => ({
     }
   }));
 
-const TodoModal = ({addTodo, open, handleClose, isEdit, todo, updateTodo}) => {
+const TodoModal = () => {
+
+    const [{isEditMode, editTodoData, isModalOpen}, dispatch] = useStateValue()
 
     const classes = useStyles();
     const [modalStyle] = useState(getModalStyle);
+    // console.log(typeof isEditMode)
+    // console.log(editTodoData)
 
-    const [title, setTitle] = useState(isEdit ? todo.todo.title : '')
-    const [day, setDay] = useState(isEdit ? todo.todo.day : '')
-    const [remainder, setRemainder] = useState(isEdit ? todo.todo.remainder : false)
+    const [title, setTitle] = useState(isEditMode ? editTodoData.todo.title : '')
+    const [day, setDay] = useState(isEditMode ? editTodoData.todo.day : '')
+    const [remainder, setRemainder] = useState(isEditMode ? editTodoData.todo.remainder : false)
+
+    const handleClose = () => {
+        dispatch({
+          type: 'MODAL_CLOSE'
+        })
+        dispatch({
+          type: 'SET_TO_NEW'
+        })
+    };
 
     const handleSubmit = e => {
         e.preventDefault();
@@ -55,12 +69,18 @@ const TodoModal = ({addTodo, open, handleClose, isEdit, todo, updateTodo}) => {
             return
         }
 
-        if (isEdit) {
-            updateTodo(todo.id, {title, day, remainder})
+        if (isEditMode) {
+            dispatch({
+                type: 'UPDATE_TODO',
+                id: editTodoData.id,
+                todo: {title, day, remainder}
+            })
         } else {
-            addTodo({title, day, remainder})
+            dispatch({
+                type: 'ADD_TODO',
+                todo: {title, day, remainder}
+            })
         }
-
 
         setTitle('')
         setDay('')
@@ -71,7 +91,7 @@ const TodoModal = ({addTodo, open, handleClose, isEdit, todo, updateTodo}) => {
 
     const body = (
       <div style={modalStyle} className={classes.paper}>
-        <h2 id="simple-modal-title">Add Task</h2>
+        <h2 id="simple-modal-title">{isEditMode ? 'Edit Todo' : 'Add Todo'}</h2>
         <span id="simple-modal-description">
             <form action="" className={classes.mb20} onSubmit={handleSubmit}>
                 <FormControl className={classes.width100}>
@@ -96,7 +116,7 @@ const TodoModal = ({addTodo, open, handleClose, isEdit, todo, updateTodo}) => {
         </span>
         <div className={classes.buttonGroup}>
             <Button variant="contained" color="primary" type="submit" onClick={handleSubmit}>
-                {isEdit ? 'Update Todo' : 'Add Todo'}
+                {isEditMode ? 'Update Todo' : 'Add Todo'}
             </Button>
             <Button variant="contained" color="primary" onClick={handleClose}>
                 Close
@@ -107,7 +127,7 @@ const TodoModal = ({addTodo, open, handleClose, isEdit, todo, updateTodo}) => {
 
     return (
         <Modal
-            open={open}
+            open={isModalOpen}
             onClose={handleClose}
         >
             {body}
@@ -115,8 +135,8 @@ const TodoModal = ({addTodo, open, handleClose, isEdit, todo, updateTodo}) => {
     )
 }
 
-TodoModal.propTypes = {
-    isEdit: PropTypes.bool.isRequired,
-}
+// TodoModal.propTypes = {
+//     isEdit: PropTypes.bool.isRequired,
+// }
 
 export default TodoModal
