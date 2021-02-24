@@ -2,18 +2,12 @@ import { db } from './firebase'
 import firebase from 'firebase'
 
 export const initialState = {
+    isLoading: true,
     isEditMode: false,
     isModalOpen: false,
     todos: [],
     editTodoData: [],
 }
-
-const loadTodos = () => {
-    db.collection('todos').orderBy('updated', 'desc').onSnapshot(snapshot => {
-        snapshot.docs.map(doc => ({id: doc.id, todo: doc.data()}))
-    })
-}
-
 
 
 const addTodo = (todo) => {
@@ -46,7 +40,8 @@ const reducer = (state, action) => {
         case 'LOAD_TODOS':
             return {
                 ...state,
-                todos: action.todos
+                todos: action.todos,
+                isLoading: false
             }
 
         case 'LOAD_TODO_FOR_EDIT':

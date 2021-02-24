@@ -1,0 +1,7 @@
+.list {
+  margin: 10px 0;
+}
+
+.list__active {
+  background-color: #72efdd;
+}

@@ -3,6 +3,7 @@ import { Checkbox, ListItem, ListItemText, ListItemSecondaryAction, IconButton }
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { useStateValue } from '../StateProvider';
+import './Todo.css'
 
 const Todo = ({todo}) => {
 
@@ -24,13 +25,13 @@ const Todo = ({todo}) => {
     }
 
     return (
-        <ListItem>
-            <Checkbox
+        <ListItem className={`list ${todo.todo.remainder ? 'list__active' : ''}`}>
+            {/* <Checkbox
                 checked={todo.todo.remainder}
                 // onChange={handleChange}
                 color="primary"
                 // inputProps={{ 'aria-label': 'secondary checkbox' }}
-            />
+            /> */}
             <ListItemText primary={todo.todo.title} secondary={todo.todo.day} />
             <ListItemSecondaryAction>
                 <IconButton edge="end" aria-label="delete" onClick={todoEdit}>

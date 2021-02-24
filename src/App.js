@@ -7,11 +7,13 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import { useEffect } from 'react';
 import { db } from './firebase'
 import { useStateValue } from './StateProvider';
+import { LinearProgress } from '@material-ui/core';
+
 
 
 function App() {
 
-  const [{}, dispatch] = useStateValue()
+  const [{isLoading}, dispatch] = useStateValue()
 
   useEffect(() => {
     db.collection('todos').orderBy('updated', 'desc').onSnapshot(snapshot => {
@@ -34,6 +36,7 @@ function App() {
             </Route>
 
             <Route path="/">
+              {isLoading && <LinearProgress />}
               <Todos />
             </Route>
 
